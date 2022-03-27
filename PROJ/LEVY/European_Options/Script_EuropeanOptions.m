@@ -23,7 +23,7 @@ call = 1;    %For call use 1 (else, its a put)
 S_0  = 100;  %Initial price
 W    = 100;  %Strike            %NOTE: no error handling in place for extreme values of W (increase grid if strike falls outside)
 r    = .05;  %Interest rate
-q    = .00;  %dividend yield
+q    = .01;  %dividend yield
 T    = 1;    %Time (in years)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -65,6 +65,17 @@ elseif model == 6 % Heston Model
     params.kappa =1.5768;   % rate of variance mean reversion
     params.sigma_v = 0.5751;   % volatility of variance
     params.rho = -0.5711;   % correlation between Brownian motions
+    
+elseif model == 8 % Variance Gamma 
+    params.sigma = 0.2; 
+    params.nu = 0.85;  
+    params.theta = 0.1; 
+    
+elseif model == 9 % Bilateral Gamma 
+    params.alpha_p = 1.18; 
+    params.lam_p = 10.57;  
+    params.alpha_m = 1.44; 
+    params.lam_m = 5.57;
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

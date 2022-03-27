@@ -1,25 +1,61 @@
-function price = Barrier_StochasticVol_func(N,alph,call,down,S_0,W,H,M,r,T,m_0,psi_J,model, modparam, gridMethod, gamma, gridMultParam)
-%-----------------------------
+function price = PROJ_Barrier_StochVol(numeric_param, call, down, S_0, W, H, M, r, T, psi_J, model, modparam)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% About: Pricing Function for Barrier Options using CTMC Approximation + PROJ method
+% Models Supported: Stochastic Volatility (including jumps)
+% Returns: price of contract
+% Author: Justin Lars Kirkby
+%
+% References:  (1) A unified approach to Bermudan and Barrier options under stochastic
+%               volatility models with jumps. J. Economic Dynamics and Control, 2017
+%              (2) Robust barrier option pricing by Frame Projection under
+%               exponential Levy Dynamics. Applied Mathematical Finance, 2018.
+%
+% ----------------------
+% Contract Params 
+% ----------------------
 % H  : Barrier (either up and out, or down and out... No double barrier yet
 % call : 1 for a call, else a put (easily can add digitals, etc)
 % down : 1 for down-and-out, else up and out
-% N  : size of density grid (value grid is K:=N/2)
-% alph: density gridwith param, density on [-alph,alph]... value grid width = alph
-% r  : interest rate 
-% q  : dividend (needs to be part of drift below, ie r-q ... for now it does nothing)
 % T  : number of years (T = 2 is two years, T = .5 is half a year)
-% S_0: initial Underlying
 % M  : number of subintervals of [0,T] (total of M+1 points in time grid)
 % W  : strike  (used instead of K)
-% m_0: number of states to approximate the Heston model with
+%
+% ----------------------
+% Model Params 
+% ----------------------
+% S_0: initial Underlying
+% r  : interest rate 
 % psi_J: characteristic exponenent of jump part...
 %        function handdle: psi_J(xi) = lambda*(phi(xi) -1)
-% model: 1 = Heston, 2 = SteinStein, 3 = 3/2 Model, 4 = 4/2 Model, 
-%        5 = HullWhite, 6 = Scott
-% gamma: var grid width parameter, grid is +/- gamma*stddev(variance process)
-% gridMethod: hardcoded to 4 (sinh nonuniform)
+% model: 
+%        1 = HESTON:      Sigmav, v0, rho, eta, theta
+%        2 = STEIN-STEIN: Sigmav, v0, rho, eta, theta
+%        3 = 3/2 MODEL:   Sigmav, v0, rho, eta, theta
+%        4 = 4/2 MODEL:   Sigmav, v0, rho, eta, theta, aa, bb
+%        5 = HULL-WHITE:  Sigmav, v0, rho
+%        6 = SCOTT:       Sigmav, v0, rho, eta, theta
+%        7 = ALPHA-HYPER: Sigmav, v0, rho, eta, theta
+%
 % modparam: contains all necessary params for the specific model (see below during assingment which ones are needed)
+%
+%
+% ----------------------
+% Numerical Params 
+% ----------------------
+% numeric_parm: container of numerical params
+%   N  : size of density grid (value grid is K:=N/2)
+%   alph: density gridwith param, density on [-alph,alph]... value grid width = alph
+%   m_0: number of states to approximate the Heston model with
+%   gamma: var grid width parameter, grid is +/- gamma*stddev(variance process)
+%   gridMethod: which type of var grid to use (typcially use 4)
 %-------------------------------
+
+N = numeric_param.N;
+alph = numeric_param.alph;
+m_0 = numeric_param.m_0;
+gridMethod = numeric_param.gridMethod;
+gamma = numeric_param.gamma;
+gridMultParam = numeric_param.gridMultParam;
 
 K    = N/2;
 dx   = 2*alph/(N-1); a = 1/dx;
@@ -220,7 +256,7 @@ while v0 > v(k_0) && k_0 < m_0
 end
 k_0 = k_0 - 1;
 
-%%% Cubic Interpolation (I think natural cubic spline)
+%%% Cubic Interpolation
 % k_int = [(k_0-1) k_0 (k_0+1)];
 % v_int = [v(k_int(1)) v(k_int(2)) v(k_int(3))];
 % Vals_int = [CONT(nnot,(k_int(1))) CONT(nnot,(k_int(2))) CONT(nnot,(k_int(3)))];

@@ -57,6 +57,11 @@ elseif model == 5 %Kou Double Expo
     params.p_up  = 0.2;
     params.eta1  = 25;
     params.eta2  = 10;
+
+elseif model == 8 % Variance Gamma 
+    params.sigma = 0.2; 
+    params.nu = 0.85;  
+    params.theta = 0;    
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

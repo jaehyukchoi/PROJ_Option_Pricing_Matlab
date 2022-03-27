@@ -3,7 +3,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Descritpion: Script to Price Step (Soft) Barrier options in Levy Models
 %              using the PROJ method
-%  Payoff is exp(-stepRho*tau_M)*(S_T - W)^+ for a call, where tau_M is the amount of time spent in knock-out region
+% Payoff is exp(-stepRho*R)*(S_T - W)^+ for a call, where R is the proportion of time spent in knock-out region
+%
+%   NOTE: Similar contract is Fader option, (1 - R)*(S_T - W)^+ ... see Fader Option Script
+%
 % Author:      Justin Kirkby
 % References:   
 %              (1) Robust Barrier Option Pricing by Frame Projection under
